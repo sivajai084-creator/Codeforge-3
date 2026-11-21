@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CodeForge – AI Code Studio</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f5fb;--card:rgba(255,255,255,.8);--text:#171a26;--muted:#6a7188;--line:#dfe2ee;--a1:#6d5bff;--a2:#00b8d9;--on:#fff;--cb:#0f1117;--ct:#e8eaf3;
+--k:#c792ea;--s:#a5e075;--n:#f78c6c;--c:#6b7390;--glow:rgba(109,91,255,.35)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07080d;--card:rgba(22,24,36,.75);--text:#eef0fa;--muted:#8f96b0;--line:#272b3d;--a1:#8b7bff;--a2:#22d3ee;--on:#07080d;--glow:rgba(139,123,255,.4)}}
+:root[data-theme="dark"]{--bg:#07080d;--card:rgba(22,24,36,.75);--text:#eef0fa;--muted:#8f96b0;--line:#272b3d;--a1:#8b7bff;--a2:#22d3ee;--on:#07080d;--glow:rgba(139,123,255,.4)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100%;overflow-x:hidden}
+.blob{position:fixed;width:340px;height:340px;border-radius:50%;filter:blur(90px);opacity:.35;z-index:0;pointer-events:none;animation:fl 14s ease-in-out infinite alternate}
+.b1{background:var(--a1);top:-80px;left:-80px}.b2{background:var(--a2);bottom:-100px;right:-80px;animation-delay:-6s}
+@keyframes fl{to{transform:translate(70px,50px) scale(1.2)}}
+main{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:22px 16px 48px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+.logo b{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.icon{background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:1rem}
+h1{font-size:clamp(1.7rem,6vw,2.5rem);line-height:1.15;margin:22px 0 6px;letter-spacing:-.03em}
+h1 span{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.type{color:var(--muted);min-height:1.6em;margin:0 0 18px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92rem}
+.type:after{content:"▍";animation:bl 1s steps(1) infinite;color:var(--a2)}
+@keyframes bl{50%{opacity:0}}
+.card{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px;padding:14px}
+.modes{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:14px}
+.mode{border:0;background:none;color:var(--muted);padding:9px 2px;border-radius:9px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s}
+.mode.on{background:linear-gradient(135deg,var(--a1),var(--a2));color:var(--on);box-shadow:0 4px 16px var(--glow)}
+.lab{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 7px}
+.langs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;margin-bottom:6px}
+.langs::-webkit-scrollbar{display:none}
+.lg{flex:none;display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:999px;padding:7px 13px;font:inherit;font-size:.88rem;cursor:pointer;transition:.18s}
+.lg i{width:9px;height:9px;border-radius:50%;display:block}
+.lg.on{border-color:var(--a1);box-shadow:0 0 0 3px var(--glow);transform:translateY(-1px)}
+textarea{width:100%;min-height:130px;resize:vertical;font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
+textarea:focus{outline:0;border-color:var(--a1);box-shadow:0 0 0 3px var(--glow)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 14px}
+.chip{border:1px dashed var(--line);background:none;color:var(--muted);border-radius:999px;padding:5px 11px;font-size:.8rem;cursor:pointer}
+.chip:hover{color:var(--text);border-color:var(--a1)}
+.go{width:100%;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:700;color:var(--on);cursor:pointer;background:linear-gradient(110deg,var(--a1),var(--a2),var(--a1));background-size:200% 100%;box-shadow:0 8px 28px var(--glow);transition:transform .15s;animation:sh 4s linear infinite}
+.go:active{transform:scale(.98)}.go:disabled{opacity:.7;animation-duration:.8s}
+@keyframes sh{to{background-position:-200% 0}}
+.hint{text-align:center;color:var(--muted);font-size:.75rem;margin:8px 0 0}
+#out{margin-top:18px}
+.msg{color:var(--muted);text-align:center;padding:16px}.err{color:#f04438}
+.expl{white-space:pre-wrap;margin:12px 2px}
+.code{background:var(--cb);border-radius:14px;overflow:hidden;margin:12px 0;border:1px solid var(--line);animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+.code header{display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(255,255,255,.04)}
+.dot{width:10px;height:10px;border-radius:50%}
+.code header span{flex:1;margin-left:6px;color:#9aa1b8;font-size:.78rem;font-family:ui-monospace,monospace}
+.code header button{background:none;border:1px solid #384058;color:#d0d4e6;border-radius:8px;padding:3px 10px;cursor:pointer;font-size:.78rem}
+.code pre{margin:0;padding:12px 14px;overflow-x:auto;color:var(--ct);font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;counter-reset:l}
+.code pre div{counter-increment:l;white-space:pre;min-height:1.6em}
+.code pre div:before{content:counter(l);display:inline-block;width:2.2em;margin-right:12px;text-align:right;color:#4d556f;user-select:none}
+.k{color:var(--k)}.s{color:var(--s)}.n{color:var(--n)}.c{color:var(--c);font-style:italic}
+.stat{color:var(--muted);font-size:.78rem;text-align:right;margin:4px 4px 0}
+.hist{margin-top:20px}
+.hi{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 12px;margin-bottom:6px;font:inherit;font-size:.85rem;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hi small{color:var(--a2);margin-right:8px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div>
+<main>
+  <div class="top"><div class="logo">Code<b>Forge</b></div><button class="icon" id="th" aria-label="Toggle theme">◐</button></div>
+  <h1>Your AI pair programmer for <span id="lw">Python</span></h1>
+  <p class="type" id="ty"></p>
+  <div class="card">
+    <div class="modes" id="modes"></div>
+    <p class="lab" id="ll">Language</p>
+    <div class="langs" id="langs"></div>
+    <p class="lab" id="pl">What should the code do?</p>
+    <textarea id="prompt" spellcheck="false"></textarea>
+    <div class="chips" id="chips"></div>
+    <button class="go" id="go">⚡ Generate</button>
+    <p class="hint">Tip: press Ctrl or ⌘ + Enter to run</p>
+  </div>
+  <div id="out"></div>
+  <div class="hist" id="hist"></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const L={Python:"#3776ab",JavaScript:"#f7df1e",TypeScript:"#3178c6",Java:"#e76f00",C:"#a8b9cc","C++":"#00599c","C#":"#9b4f96",Go:"#00add8",Rust:"#dea584",PHP:"#777bb4",Ruby:"#cc342d",Swift:"#fa7343",Kotlin:"#7f52ff",SQL:"#e38c00",Bash:"#4eaa25",R:"#276dc3",Dart:"#0175c2",Lua:"#2c2d72"};
+const M={
+ gen:{b:"✨ Create",go:"⚡ Generate",p:"What should the code do?",ph:"e.g. A function that finds the longest word in a sentence",ex:["Reverse a linked list","Binary search","Fetch JSON from a URL","Todo list class","Fizzbuzz with a twist"],i:"Write clean, correct, idiomatic {L} code for this request: {T}\nReply with one short sentence of context, one fenced code block tagged with the language (brief comments), then 2–4 sentences on how to run it."},
+ exp:{b:"🔍 Explain",go:"🔍 Explain this code",p:"Paste code to explain",ph:"Paste any code here…",ex:[],i:"Explain this {L} code step by step for a learner. Start with a one-line summary, then walk through it in short points, then note any gotchas:\n\n{T}"},
+ con:{b:"🔁 Convert",go:"🔁 Convert to selected language",p:"Paste code to convert",ph:"Paste code in any language here…",ex:[],i:"Convert the following code to idiomatic {L}. Reply with one fenced code block tagged {L}, then 2–3 sentences on notable differences:\n\n{T}"},
+ dbg:{b:"🐞 Debug",go:"🐞 Find and fix bugs",p:"Paste buggy code (and the error, if any)",ph:"Paste your code and error message…",ex:[],i:"Find and fix the bugs in this {L} code. Explain each bug briefly, then give the full corrected code in one fenced code block tagged {L}:\n\n{T}"}
+};
+const KW=/^(def|class|return|if|else|elif|for|while|import|from|as|function|const|let|var|new|public|private|static|void|int|string|bool|boolean|float|double|char|fn|mut|pub|use|struct|impl|enum|func|package|type|interface|try|catch|except|finally|throw|throws|async|await|in|of|not|and|or|null|nil|None|True|False|true|false|self|this|select|from|where|insert|into|values|create|table|update|delete|join|echo|fi|do|done|then|end|local|extends|override|val|fun|namespace|using|template|typename|include|main|print|println|console|lambda|yield|with|pass|break|continue|switch|case|default)$/;
+let mode="gen",lang="Python",st=Date.now();
+
+/* modes */
+Object.keys(M).forEach(k=>{const b=document.createElement("button");b.className="mode";b.textContent=M[k].b;b.dataset.k=k;b.onclick=()=>setMode(k);$("modes").appendChild(b)});
+function setMode(k){mode=k;document.querySelectorAll(".mode").forEach(b=>b.classList.toggle("on",b.dataset.k===k));
+ const m=M[k];$("go").textContent=m.go;$("pl").textContent=m.p;$("prompt").placeholder=m.ph;$("prompt").style.minHeight=k==="gen"?"110px":"190px";
+ $("ll").textContent=k==="con"?"Convert to":k==="gen"?"Language":"Code language";
+ $("chips").textContent="";m.ex.forEach(t=>{const b=document.createElement("button");b.className="chip";b.textContent=t;b.onclick=()=>{$("prompt").value=t;$("prompt").focus()};$("chips").appendChild(b)})}
+/* languages */
+Object.keys(L).forEach(n=>{const b=document.createElement("button");b.className="lg";b.dataset.n=n;const d=document.createElement("i");d.style.background=L[n];b.append(d,n);b.onclick=()=>setLang(n);$("langs").appendChild(b)});
+function setLang(n){lang=n;$("lw").textContent=n;document.querySelectorAll(".lg").forEach(b=>b.classList.toggle("on",b.dataset.n===n))}
+/* typing tagline */
+const TL=["Generate code in 18 languages.","Explain code you don’t understand.","Convert between languages instantly.","Squash bugs in seconds."];let ti=0,ci=0,del=false;
+(function tick(){const t=TL[ti];ci+=del?-1:1;$("ty").textContent=t.slice(0,ci);let d=del?25:55;if(!del&&ci===t.length){del=true;d=1400}else if(del&&ci===0){del=false;ti=(ti+1)%TL.length;d=300}setTimeout(tick,d)})();
+/* theme */
+$("th").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=dark?"light":"dark"};
+/* highlight */
+function hl(line){const f=document.createDocumentFragment();const re=/(\/\/.*|#.*|--.*)|("(?:\\.|[^"\\])*"?|'(?:\\.|[^'\\])*'?|`[^`]*`?)|(\b\d+\.?\d*\b)|(\b[A-Za-z_]\w*\b)/g;let i=0,m;
+ const add=(t,c)=>{if(!t)return;if(c){const s=document.createElement("span");s.className=c;s.textContent=t;f.appendChild(s)}else f.appendChild(document.createTextNode(t))};
+ while((m=re.exec(line))){add(line.slice(i,m.index));i=re.lastIndex;if(m[1])add(m[0],"c");else if(m[2])add(m[0],"s");else if(m[3])add(m[0],"n");else add(m[0],KW.test(m[0])?"k":"")}
+ add(line.slice(i));return f}
+/* render */
+const COL=["#ff5f57","#febc2e","#28c840"];
+function render(text){const out=$("out");out.textContent="";
+ text.split(/```/).forEach((p,i)=>{
+  if(i%2===0){if(p.trim()){const d=document.createElement("div");d.className="expl";d.textContent=p.trim();out.appendChild(d)}return}
+  const nl=p.indexOf("\n"),lg=nl>-1?p.slice(0,nl).trim():"",code=(nl>-1?p.slice(nl+1):p).replace(/\n$/,"");
+  const box=document.createElement("div");box.className="code";const h=document.createElement("header");
+  COL.forEach(c=>{const d=document.createElement("div");d.className="dot";d.style.background=c;h.appendChild(d)});
+  const s=document.createElement("span");s.textContent=lg||"code";const b=document.createElement("button");b.textContent="Copy";
+  b.onclick=async()=>{try{await navigator.clipboard.writeText(code);b.textContent="Copied ✓"}catch(e){b.textContent="Select to copy"}setTimeout(()=>b.textContent="Copy",1600)};
+  h.append(s,b);const pre=document.createElement("pre");
+  code.split("\n").forEach(l=>{const d=document.createElement("div");d.appendChild(hl(l));pre.appendChild(d)});
+  box.append(h,pre);out.appendChild(box)});
+ const st2=document.createElement("div");st2.className="stat";st2.textContent=((Date.now()-st)/1000).toFixed(1)+"s";out.appendChild(st2)}
+function msg(t,c){const o=$("out");o.textContent="";const d=document.createElement("div");d.className="msg "+(c||"");d.textContent=t;o.appendChild(d)}
+/* history */
+let H=[];try{H=JSON.parse(localStorage.getItem("cf_h")||"[]")}catch(e){}
+function drawH(){const h=$("hist");h.textContent="";if(!H.length)return;const t=document.createElement("p");t.className="lab";t.textContent="Recent";h.appendChild(t);
+ H.forEach(x=>{const b=document.createElement("button");b.className="hi";const s=document.createElement("small");s.textContent=x.l;b.append(s,x.t.replace(/\s+/g," ").slice(0,80));b.onclick=()=>{setMode(x.m);setLang(x.l);$("prompt").value=x.t;scrollTo({top:0,behavior:"smooth"})};h.appendChild(b)})}
+function saveH(t){H=[{m:mode,l:lang,t},...H.filter(x=>x.t!==t)].slice(0,6);try{localStorage.setItem("cf_h",JSON.stringify(H))}catch(e){}drawH()}
+/* run */
+async function run(){const t=$("prompt").value.trim();
+ if(!t){msg("Type or paste something first.","err");return}
+ $("go").disabled=true;msg("Forging…");st=Date.now();
+ try{
+  const r=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:mode,lang:lang,text:t})});
+  if(!r.ok){let e="Something went wrong. Try again.";try{e=(await r.json()).error||e}catch(_){}throw new Error(e)}
+  const rd=r.body.getReader(),dec=new TextDecoder();let acc="";
+  while(true){const x=await rd.read();if(x.done)break;acc+=dec.decode(x.value,{stream:true});render(acc)}
+  render(acc);saveH(t);
+ }catch(e){msg(e.message||"Something went wrong.","err")}
+ finally{$("go").disabled=false}}
+$("go").onclick=run;
+$("prompt").addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter")run()});
+setMode("gen");setLang("Python");drawH();
+</script>
+</body>
+</html>
